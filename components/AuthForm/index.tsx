@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
 
 import {
   Flex,
@@ -7,10 +9,35 @@ import {
   Button,
   useColorModeValue
 } from '@chakra-ui/react'
+import { AuthContext } from '../../context/AuthContext';
 
-const AuthForm: React.FC = () => {
+type User = {
+  username: string,
+  password: string
+}
+
+type Props = {
+  hasAccount: boolean
+}
+
+const AuthForm: React.FC<Props> = ({ hasAccount }) => {
+
+  const [userHasAccount, setUserHasAccount] = useState(hasAccount);
 
   const formBackground = useColorModeValue('gray.200', 'gray.700');
+  const { signIn, signUp } = useContext(AuthContext);
+
+  const { register, handleSubmit, formState: { errors } }: any = useForm<User>();
+
+  const router = useRouter();
+
+  const submitHandler = async (data: User) => {
+    if (!hasAccount && data) {
+      await signUp(data);
+    } else if (hasAccount && data) {
+      await signIn(data);
+    }
+  }
 
   return (
       <Flex direction='column' background={formBackground} p={12} rounded={6} >
@@ -18,13 +45,50 @@ const AuthForm: React.FC = () => {
         <Heading mb={6}>
           Login or create an account
         </Heading>
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <Flex>
+            <Input
+              {...register('username', { required: true })}
+              // value={user.username}
+              // onChange={e => setUser({
+              //   username: e.target.value,
+              //   password: user.password
+              // })}
 
-        <Input placeholder='email@gmail.com' variant='filled' mb={3} type='email' />
-        <Input placeholder='******' variant='filled' mb={6} type='password' />
-        <Flex justifyContent='center' >
-          <Button colorScheme='teal' >Sign in</Button>
-          <Button ml={6} colorScheme='red' >Sign Up</Button>
-        </Flex>
+              name='username'
+              placeholder='username'
+              variant='filled'
+              mb={3}
+              type='text'
+            />
+            { errors.username && errors.username.type === 'required' && (
+              <div className='error'>you must enter your username</div>
+            )}
+          </Flex>
+          <Flex>
+            <Input
+              {...register('password', { required: true })}
+              // value={user.password}
+              // onChange={e=>setUser({
+              //   username: user.username,
+              //   password: e.target.value
+              // })}
+              name='password'
+              placeholder='******'
+              variant='filled'
+              mb={6}
+              type='password'
+            />
+            { errors.password && errors.password.type === 'required' && (
+              <div>you must enter your password</div>
+            )}
+          </Flex>
+          <Flex justifyContent='center' >
+            <Button type='submit' colorScheme='teal' >Sign in</Button>
+            <Button onClick={()=>setUserHasAccount(false)} type='submit' ml={6} colorScheme='red' >Sign Up</Button>
+          </Flex>
+        </form>
+        {/* <Flex>{JSON.stringify(user)}</Flex> */}
       </Flex>
   )
 }
