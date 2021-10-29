@@ -1,7 +1,7 @@
-import { createContext, useState } from 'react';
-import { api } from '../services/api';
-import { setCookie } from 'nookies';
+import { createContext, useEffect, useState } from 'react';
+import { setCookie, parseCookies } from 'nookies';
 import Router from 'next/router';
+import { api } from '../services/api';
 
 type SignInData = {
   username: string,
@@ -36,6 +36,14 @@ export const AuthProvider = ({ children }) => {
     return response.data;
   }
 
+  useEffect(() => {
+    const { 'auth.token': token } = parseCookies();
+
+    if (token) {
+
+    }
+  }, [])
+
   const signIn = async({ username, password }: SignInData) => {
     const signInUrl = '/sign-in';
 
@@ -46,6 +54,8 @@ export const AuthProvider = ({ children }) => {
       maxAge: 60 * 60 * 1, //1 hour cookie
     }) //(ss, name, thing to save, options[had to add @types/cookie - used by nookies])
     console.log(token);
+
+    api.defaults.headers['Authorization'] = `Bearer ${token}`
 
     setUser({
       username: username,

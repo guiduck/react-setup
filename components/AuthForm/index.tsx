@@ -49,12 +49,6 @@ const AuthForm: React.FC<Props> = ({ hasAccount }) => {
           <Flex>
             <Input
               {...register('username', { required: true })}
-              // value={user.username}
-              // onChange={e => setUser({
-              //   username: e.target.value,
-              //   password: user.password
-              // })}
-
               name='username'
               placeholder='username'
               variant='filled'
@@ -68,11 +62,6 @@ const AuthForm: React.FC<Props> = ({ hasAccount }) => {
           <Flex>
             <Input
               {...register('password', { required: true })}
-              // value={user.password}
-              // onChange={e=>setUser({
-              //   username: user.username,
-              //   password: e.target.value
-              // })}
               name='password'
               placeholder='******'
               variant='filled'

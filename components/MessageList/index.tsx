@@ -22,9 +22,7 @@ type Message = {
 
 const MessageList: React.FC = () => {
 
-  const token: any = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjksInVzZXJuYW1lIjoiZ3VpZHVjayIsImlhdCI6MTYzNTM4MzUyMCwiZXhwIjoxNjM1Mzg3MTIwfQ.xLDE9vzIQW5IOM2p073KqnAqdOmy4Zsc3D8vqyc6z7E';
-
-  const {data: messages, error } = useMessages(token)
+  const {data: messages, error } = useMessages()
 
   return (
     <Container >
@@ -32,7 +30,8 @@ const MessageList: React.FC = () => {
         List of messages
       </Heading>
       {
-        messages ?
+        messages
+        ?
         messages.map((message: Message) => {
           return (
             <MessageItem
@@ -43,7 +42,8 @@ const MessageList: React.FC = () => {
               date={message.createdAt}
             />
           );
-        }) :
+        })
+        :
         <Flex>Loading...</Flex>
       }
     </Container>
